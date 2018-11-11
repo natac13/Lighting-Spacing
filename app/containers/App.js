@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
 
+import LightSpaceForm from 'Components/Form/';
+
 
 class App extends Component {
   constructor(props) {
@@ -11,6 +13,7 @@ class App extends Component {
     return (
       <div>
         Sean Paul Campbell is making this program.
+        <LightSpaceForm />
       </div>
     )
   }
