@@ -1,68 +1,79 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Formik,
   Field,
   Form,
   ErrorMessage,
 } from 'formik';
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  HelpBlock,
+  ButtonToolbar,
+  Button,
+} from 'react-bootstrap';
 
-const LightSpaceForm = (props) => {
-  const initial = {
-    lengthOfRoom: 0,
-    widthOfRoom: 0,
-    numOfLights: 0,
-    widthOfLight: 0,
-    lengthOfLight: 0,
-    orientation: 'parallel',
-  };
+function FieldGroup({ id, label, help, ...props }) {
   return (
-    <div>
-      <h1>Light Spacing</h1>
+    <FormGroup controlId={id}>
+      <ControlLabel>{label}</ControlLabel>
+      <FormControl {...props} />
+      {help && <HelpBlock>{help}</HelpBlock>}
+    </FormGroup>
+  );
+}
+
+ /* eslint-disable */
+
+
+class LightSpacingForm extends Component {
+
+
+  render() {
+    return (
       <Formik
-        initialValues={initial}
-        onSubmit={(values, actions) => {
-          const {
-            numOfLights,
-            widthOfLight,
-            lengthOfLight,
-            lengthOfRoom,
-            widthOfRoom,
-            orientation,
-          } = values;
-          const numOfSpaces = numOfLights;
-          /* Center of Light */
-          // a distance between lights
-          // b is half of a and the distance between the first/last light and the wall.
-          const a = lengthOfRoom / numOfSpaces;
-          const b = a / 2;
-
-          /* Edge of Light */
-          // c = distance between the edges of two lights.
-          // d = ditance between wall and outside edge of the first and last light
-
-          console.log(`Distance between lights is ${a}; with the first light centered at ${b} off the wall.`);
-          actions.resetForm();
-          console.log(actions);
+        initialValues={{
+          numOfLights: 0,
+          lengthOfRoom: 0,
+          widthOfRoom: 0,
+          lengthOfLights: 0,
+          widthOfLights: 0,
         }}
-        render={({ errors, touched, isSubmitting }) => (
-          <Form>
-            <label htmlFor="lengthOfRoom">Length Of Room</label>
-            <Field type="number" name="lengthOfRoom" id="lengthOfRoom" />
-            <ErrorMessage name="lengthOfRoom" component="div" />
-            <br />
-            <label htmlFor="numOfLights">Number of Lights</label>
-            <Field type="number" name="numOfLights" id="numOfLights" />
-            <ErrorMessage name="numOfLights" />
-            <br />
-            <button type="submit" disabled={isSubmitting}>
-              Submit
-            </button>
+        onSubmit={(values, actions) => {
+          setTimeout(() => {
+            console.log(JSON.stringify(values, null, 2));
+            actions.setSubmitting(false);
+          }, 1000);
+        }}
+      >
+        {({ values, handleChange, handleBlur, handleSubmit, handleReset, isSubmitting }) => (
+          <Form >
+            <Field name="numOfLights">
+              {({ field, form }) => (
+                <FieldGroup {...field} type="number" label="Number Of Lights" />
+              )}
+            </Field>
+            <Field name="lengthOfRoom">
+              {({ field, form }) => (
+                <FieldGroup {...field} type="number" label="Length Of Room" />
+              )}
+            </Field>
+            <ButtonToolbar>
+              <Button
+                type="submit"
+                bsStyle="primary"
+                disabled={isSubmitting}
+              >
+                Submit
+              </Button>
+              <Button onClick={handleReset}>Reset</Button>
+            </ButtonToolbar>
           </Form>
         )}
-      />
-    </div>
+      </Formik>
+    );
+  }
+}
 
-  );
-};
-
-export default LightSpaceForm;
+export default LightSpacingForm;
