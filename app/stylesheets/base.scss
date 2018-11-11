@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+  font-size: 16px;
+}
+// ::-webkit-scrollbar {
+//   width: 0px;  /* remove scrollbar space */
+//   background: transparent;  /* optional: just make scrollbar invisible */
+// }
+
+body {
+  line-height: 1.5;
+  font-family: $roboto;
+  font-size: $font-size;
+  margin: 0;
+  padding: 0;
+  background: white;
+  color: black;
+}
+
