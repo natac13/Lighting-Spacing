@@ -1,0 +1,16 @@
+.room {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  width: 60em;
+  height: 25em;
+  border: 1px solid black;
+  margin: auto;
+  align-items: center;
+}
+
+.light {
+  width: 2em;
+  height: 10em;
+  border: 1px solid black;
+}
