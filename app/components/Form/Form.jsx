@@ -15,6 +15,7 @@ import {
   Button,
 } from 'react-bootstrap';
 import range from 'lodash/range';
+import flatten from 'lodash/flatten';
 
 import style from './style.scss';
 
@@ -28,17 +29,35 @@ function FieldGroup({ id, label, help, ...props }) {
   );
 }
 
-function Display({ lengthOfRoom, widthOfRoom, numOfLights }) {
-  // let lights = [];
-  // for (let n = 0; n < numOfLights; n++) {
-  //   lights = lights.concat([<div className={style.light} />]);
-  // }
-  const lights = range(numOfLights).map((e, i) => <div key={`#${i+1}`} className={style.light} />);
+function Display({
+  lengthOfRoom,
+  widthOfRoom,
+  numOfLights,
+  distanceBetweenWallAndFirstLightCenter,
+  distanceBetweenLightCenters,
+  renderMesurment,
+}) {
+  const lights = range(numOfLights).map(
+    (e, i) => <div key={`#${i + 1}`} className={style.light} />,
+  );
+  const a = renderMesurment(distanceBetweenLightCenters);
+  const b = renderMesurment(distanceBetweenWallAndFirstLightCenter);
+
+  const toDisplay = flatten(lights.map((light, i) => {
+    if (i === 0) {
+      return [<span>{b}</span>, light];
+    }
+    if (i + 1 === lights.length) {
+      return [<span>{a}</span>, light, <span>{b}</span>];
+    }
+    return [<span>{a}</span>, light];
+  }));
+  const roomWidth = 10 * numOfLights;
   return (
     <div className={style.container}>
     Display
-      <div className={style.room}>
-        {lights}
+      <div className={style.room} style={{ width: `${roomWidth}em` }}>
+        {toDisplay}
       </div>
     </div>
   );
@@ -57,23 +76,46 @@ class LightSpacingForm extends Component {
         widthOfLight: 1,
         lengthOfLight: 4,
         orientation: 'parallel',
+        units: 'imperial',
       },
       answers: {
-        distanceBetweenLightCenters: undefined,
-        distanceBetweenWallAndFirstLightCenter: undefined,
-        distanceBetweenLightsEdgeToEdge: undefined,
-        distanceBetweenWallAndFirstLightEdge: undefined,
-        distanceFromWidthWallToLightCenter: undefined,
-        distanceFromWidthWallToLightEdge: undefined,
+        // distanceBetweenLightCenters: undefined,
+        // distanceBetweenWallAndFirstLightCenter: undefined,
+        // distanceBetweenLightsEdgeToEdge: undefined,
+        // distanceBetweenWallAndFirstLightEdge: undefined,
+        // distanceFromWidthWallToLightCenter: undefined,
+        // distanceFromWidthWallToLightEdge: undefined,
       },
     };
+
+    this.visualUpdateNumOfLights = this.visualUpdateNumOfLights.bind(this);
+    this.renderMesurment = this.renderMesurment.bind(this);
+  }
+
+  visualUpdateNumOfLights(event) {
+    const { target: { value } } = event;
+    const newNumOfLights = value < 0 ? 0 : value;
+    return this.setState(prevState => ({
+      ...prevState,
+      answers: {},
+      formValues: { ...prevState.formValues, numOfLights: newNumOfLights },
+    }));
+  }
+
+  renderMesurment(distance) {
+    if (!distance) { return ''; }
+    const { formValues: { units } } = this.state;
+    if (units === 'metric') {
+      return `${distance}mm`;
+    }
+    return `${distance}"`;
   }
 
   render() {
-    const { formValues } = this.state;
+    const { formValues, answers } = this.state;
     return (
       <div>
-        <Display {...formValues} />
+        <Display {...formValues} {...answers} renderMesurment={this.renderMesurment}/>
         <Formik
           initialValues={formValues}
           onSubmit={(values, actions) => {
@@ -84,6 +126,7 @@ class LightSpacingForm extends Component {
               lengthOfLight,
               widthOfLight,
               orientation,
+              units,
             } = values;
             const isParallel = orientation === 'parallel';
             const lightOccupyingSpace = (isParallel ? widthOfLight : lengthOfLight) * numOfLights;
@@ -95,7 +138,7 @@ class LightSpacingForm extends Component {
             const distanceFromWidthWallToLightCenter = widthOfRoom / 2;
             const distanceFromWidthWallToLightEdge = (widthOfRoom - (isParallel ? lengthOfLight : widthOfLight)) / 2;
 
-            const answers = {
+            const newAnswers = {
               distanceBetweenLightCenters,
               distanceBetweenWallAndFirstLightCenter,
               distanceBetweenLightsEdgeToEdge,
@@ -105,11 +148,11 @@ class LightSpacingForm extends Component {
             };
 
             setTimeout(() => {
-              console.log(JSON.stringify(answers, null, 2));
+              console.log(JSON.stringify(newAnswers, null, 2));
               this.setState(prevState => ({
                 ...prevState,
                 formValues: values,
-                answers,
+                answers: newAnswers,
               }));
               actions.setSubmitting(false);
               console.log(this.state)
@@ -125,17 +168,31 @@ class LightSpacingForm extends Component {
             isSubmitting,
           }) => (
             <Form>
+              <Field name="units">
+                {({ field }) => (
+                  <FormGroup>
+                    <Radio {...field} value="imperial" checked={field.value === 'imperial'} inline>
+                      Imperial (inches)
+                    </Radio>
+                    <Radio {...field} value="metric" checked={field.value === 'metric'} inline>
+                      Metric (millimeters)
+                    </Radio>
+                  </FormGroup>
+                )}
+              </Field>
               <Field name="numOfLights">
                 {({ field, form }) => {
                   console.log(field, form);
-                  return (<FieldGroup {...field} onChange={(x) => {
-                    handleChange(x);
-                    console.log(x.target.value)
-                    this.setState(prevState => ({
-                      ...prevState,
-                      formValues: { ...prevState.formValues, numOfLights: x.target.value }
-                    }))
-                  }} type="number" label="Number Of Lights" />)
+                  return (
+                    <FieldGroup
+                      {...field}
+                      onChange={(x) => {
+                        handleChange(x);
+                        this.visualUpdateNumOfLights(x);
+                      }}
+                      type="number"
+                      label="Number Of Lights"
+                    />);
                 }}
               </Field>
               <Field name="lengthOfLight">
