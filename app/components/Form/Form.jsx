@@ -8,60 +8,14 @@ import {
 import {
   FormGroup,
   Radio,
-  ControlLabel,
-  FormControl,
-  HelpBlock,
   ButtonToolbar,
   Button,
 } from 'react-bootstrap';
-import range from 'lodash/range';
-import flatten from 'lodash/flatten';
+
+import Display from '../Display';
+import FieldGroup from '../FieldGroup';
 
 import style from './style.scss';
-
-function FieldGroup({ id, label, help, ...props }) {
-  return (
-    <FormGroup controlId={id}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-      {help && <HelpBlock>{help}</HelpBlock>}
-    </FormGroup>
-  );
-}
-
-function Display({
-  lengthOfRoom,
-  widthOfRoom,
-  numOfLights,
-  distanceBetweenWallAndFirstLightCenter,
-  distanceBetweenLightCenters,
-  renderMesurment,
-}) {
-  const lights = range(numOfLights).map(
-    (e, i) => <div key={`#${i + 1}`} className={style.light} />,
-  );
-  const a = renderMesurment(distanceBetweenLightCenters);
-  const b = renderMesurment(distanceBetweenWallAndFirstLightCenter);
-
-  const toDisplay = flatten(lights.map((light, i) => {
-    if (i === 0) {
-      return [<span>{b}</span>, light];
-    }
-    if (i + 1 === lights.length) {
-      return [<span>{a}</span>, light, <span>{b}</span>];
-    }
-    return [<span>{a}</span>, light];
-  }));
-  const roomWidth = 10 * numOfLights;
-  return (
-    <div className={style.container}>
-    Display
-      <div className={style.room} style={{ width: `${roomWidth}em` }}>
-        {toDisplay}
-      </div>
-    </div>
-  );
-}
 
 class LightSpacingForm extends Component {
   constructor(props) {
@@ -89,7 +43,7 @@ class LightSpacingForm extends Component {
     };
 
     this.visualUpdateNumOfLights = this.visualUpdateNumOfLights.bind(this);
-    this.renderMesurment = this.renderMesurment.bind(this);
+    this.visualUpdateOrientation = this.visualUpdateOrientation.bind(this);
   }
 
   visualUpdateNumOfLights(event) {
@@ -102,20 +56,19 @@ class LightSpacingForm extends Component {
     }));
   }
 
-  renderMesurment(distance) {
-    if (!distance) { return ''; }
-    const { formValues: { units } } = this.state;
-    if (units === 'metric') {
-      return `${distance}mm`;
-    }
-    return `${distance}"`;
+  visualUpdateOrientation(event) {
+    const { target: { value } } = event;
+    return this.setState(prevState => ({
+      ...prevState,
+      formValues: { ...prevState.formValues, orientation: value },
+    }));
   }
 
   render() {
     const { formValues, answers } = this.state;
     return (
       <div>
-        <Display {...formValues} {...answers} renderMesurment={this.renderMesurment}/>
+        <Display {...formValues} {...answers} />
         <Formik
           initialValues={formValues}
           onSubmit={(values, actions) => {
@@ -197,7 +150,7 @@ class LightSpacingForm extends Component {
               </Field>
               <Field name="lengthOfLight">
                 {({ field, form }) => (
-                  <FieldGroup {...field} type="number" label="Length Of Light" />
+                  <FieldGroup {...field} type="number" label="Length Of Light" help={<ErrorMessage name="lengthOfLight" />} />
                 )}
               </Field>
               <Field name="widthOfLight">
@@ -218,10 +171,28 @@ class LightSpacingForm extends Component {
               <Field name="orientation">
                 {({ field, form }) => (
                   <FormGroup>
-                    <Radio {...field} value="parallel" checked={field.value === 'parallel'} inline>
+                    <Radio
+                      {...field}
+                      value="parallel"
+                      checked={field.value === 'parallel'}
+                      inline
+                      onChange={(x) => {
+                        handleChange(x);
+                        this.visualUpdateOrientation(x);
+                      }}
+                    >
                       Parallel
                     </Radio>
-                    <Radio {...field} value="row" checked={field.value === 'row'} inline>
+                    <Radio
+                      {...field}
+                      value="row"
+                      checked={field.value === 'row'}
+                      inline
+                      onChange={(x) => {
+                        handleChange(x);
+                        this.visualUpdateOrientation(x);
+                      }}
+                    >
                       Row / Series
                     </Radio>
                   </FormGroup>
@@ -242,7 +213,6 @@ class LightSpacingForm extends Component {
         </Formik>
       </div>
     );
-
   }
 }
 

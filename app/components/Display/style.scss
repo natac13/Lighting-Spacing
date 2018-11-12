@@ -1,0 +1,29 @@
+.room {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  max-width: 88vw;
+  min-width: 33vw;
+  min-height: 33vh;
+  border: 1px solid black;
+  margin: auto;
+  align-items: center;
+}
+
+.light {
+  border: 1px solid black;
+
+  &:before {
+    content: '-->';
+    position: relative;
+    top: 40%;
+    right: 85%;
+  }
+
+  &:after {
+    content: '<--';
+    position: relative;
+    top: 25%;
+    left: 115%;
+  }
+}
