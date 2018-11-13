@@ -1,1 +1,1 @@
-export default from './Display.jsx';
+export default from './Display';

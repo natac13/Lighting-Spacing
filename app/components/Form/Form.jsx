@@ -10,7 +10,9 @@ import {
   Radio,
   ButtonToolbar,
   Button,
+  HelpBlock,
 } from 'react-bootstrap';
+import * as yup from 'yup'
 
 import Display from '../Display';
 import FieldGroup from '../FieldGroup';
@@ -111,6 +113,15 @@ class LightSpacingForm extends Component {
               console.log(this.state)
             }, 1000);
           }}
+          validationSchema={yup.object({
+            numOfLights: yup.number().required('Required'),
+            lengthOfRoom: yup.number().required('Required'),
+            widthOfRoom: yup.number(),
+            lengthOfLight: yup.number(),
+            widthOfLight: yup.number(),
+            orientation: yup.string().matches(/parallel|series/).required('Required'),
+            units: yup.string().matches(/imperial|metric/).required('Required'),
+          })}
         >
           {({
             values,
@@ -119,55 +130,78 @@ class LightSpacingForm extends Component {
             handleSubmit,
             handleReset,
             isSubmitting,
+            touched,
+            dirty,
           }) => (
             <Form>
-              <Field name="units">
-                {({ field }) => (
-                  <FormGroup>
-                    <Radio {...field} value="imperial" checked={field.value === 'imperial'} inline>
-                      Imperial (inches)
-                    </Radio>
-                    <Radio {...field} value="metric" checked={field.value === 'metric'} inline>
-                      Metric (millimeters)
-                    </Radio>
-                  </FormGroup>
-                )}
-              </Field>
-              <Field name="numOfLights">
-                {({ field, form }) => {
-                  console.log(field, form);
-                  return (
-                    <FieldGroup
-                      {...field}
-                      onChange={(x) => {
-                        handleChange(x);
-                        this.visualUpdateNumOfLights(x);
-                      }}
-                      type="number"
-                      label="Number Of Lights"
-                    />);
-                }}
-              </Field>
-              <Field name="lengthOfLight">
-                {({ field, form }) => (
-                  <FieldGroup {...field} type="number" label="Length Of Light" help={<ErrorMessage name="lengthOfLight" />} />
-                )}
-              </Field>
+              <React.Fragment>
+                <Field name="units">
+                  {({ field }) => (
+                    <FormGroup>
+                      <Radio {...field} value="imperial" checked={field.value === 'imperial'} inline>
+                        Imperial (inches)
+                      </Radio>
+                      <Radio {...field} value="metric" checked={field.value === 'metric'} inline>
+                        Metric (millimeters)
+                      </Radio>
+                    </FormGroup>
+                  )}
+                </Field>
+                <ErrorMessage name="units">
+                  {msg => <HelpBlock>{msg}</HelpBlock>}
+                </ErrorMessage>
+              </React.Fragment>
+
+              <React.Fragment>
+                <Field name="numOfLights">
+                  {({ field, form }) => {
+                    console.log(field, form);
+                    return (
+                      <FieldGroup
+                        {...field}
+                        onChange={(x) => {
+                          handleChange(x);
+                          this.visualUpdateNumOfLights(x);
+                        }}
+                        type="number"
+                        label="Number Of Lights"
+                      />);
+                  }}
+                </Field>
+                <ErrorMessage name="numOfLights">
+                  {msg => <HelpBlock>{msg}</HelpBlock>}
+                </ErrorMessage>
+              </React.Fragment>
+
+              <React.Fragment>
+                <Field name="lengthOfLight">
+                  {({ field, form }) => (
+                    <FieldGroup {...field} type="number" label="Length Of Light" help={<ErrorMessage name="lengthOfLight" />} />
+                  )}
+                </Field>
+                <ErrorMessage name="lengthOfRoom">
+                  {msg => <HelpBlock>{msg}</HelpBlock>}
+                </ErrorMessage>
+              </React.Fragment>
+
               <Field name="widthOfLight">
                 {({ field, form }) => (
                   <FieldGroup {...field} type="number" label="Width Of Light" />
                 )}
               </Field>
+
               <Field name="lengthOfRoom">
                 {({ field, form }) => (
                   <FieldGroup {...field} type="number" label="Length Of Room" />
                 )}
               </Field>
+
               <Field name="widthOfRoom">
                 {({ field, form }) => (
                   <FieldGroup {...field} type="number" label="Width Of Room" />
                 )}
               </Field>
+
               <Field name="orientation">
                 {({ field, form }) => (
                   <FormGroup>
@@ -185,7 +219,7 @@ class LightSpacingForm extends Component {
                     </Radio>
                     <Radio
                       {...field}
-                      value="row"
+                      value="series"
                       checked={field.value === 'row'}
                       inline
                       onChange={(x) => {
@@ -198,6 +232,7 @@ class LightSpacingForm extends Component {
                   </FormGroup>
                 )}
               </Field>
+
               <ButtonToolbar>
                 <Button
                   type="submit"
@@ -206,8 +241,14 @@ class LightSpacingForm extends Component {
                 >
                   Submit
                 </Button>
-                <Button onClick={handleReset}>Reset</Button>
+                <Button
+                  onClick={handleReset}
+                  disabled={isSubmitting}
+                >
+                  Reset
+                </Button>
               </ButtonToolbar>
+
             </Form>
           )}
         </Formik>

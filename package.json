@@ -28,7 +28,8 @@
     "react": "16.6.1",
     "react-bootstrap": "0.32.4",
     "react-dom": "16.6.1",
-    "react-hot-loader": "4.3.12"
+    "react-hot-loader": "4.3.12",
+    "yup": "0.26.6"
   },
   "devDependencies": {
     "@babel/core": "7.1.5",
