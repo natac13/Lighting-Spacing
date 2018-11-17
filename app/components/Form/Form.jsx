@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
-import {
-  Formik,
-  Field,
-  Form,
-  ErrorMessage,
-} from 'formik';
-import {
-  FormGroup,
-  Radio,
-  ButtonToolbar,
-  Button,
-  HelpBlock,
-} from 'react-bootstrap';
+import { Formik } from 'formik';
 import * as yup from 'yup'
 
 import Display from '../Display';
-import FieldGroup from '../FieldGroup';
+import FormDisplay from './FormDisplay';
 
 import style from './style.scss';
 
@@ -25,8 +13,8 @@ class LightSpacingForm extends Component {
     this.state = {
       formValues: {
         numOfLights: 4,
-        // numOfRows: undefined,
-        // lightsPerRow: undefined,
+        numOfRows: 1,
+        lightsPerRow: 4,
         lengthOfRoom: 50,
         widthOfRoom: 20,
         widthOfLight: 1,
@@ -46,6 +34,7 @@ class LightSpacingForm extends Component {
 
     this.visualUpdateNumOfLights = this.visualUpdateNumOfLights.bind(this);
     this.visualUpdateOrientation = this.visualUpdateOrientation.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   visualUpdateNumOfLights(event) {
@@ -66,6 +55,47 @@ class LightSpacingForm extends Component {
     }));
   }
 
+  handleSubmit(values, actions) {
+    const {
+      numOfLights,
+      lengthOfRoom,
+      widthOfRoom,
+      lengthOfLight,
+      widthOfLight,
+      orientation,
+      units,
+    } = values;
+    const isParallel = orientation === 'parallel';
+    const lightOccupyingSpace = (isParallel ? widthOfLight : lengthOfLight) * numOfLights;
+    const freeSpace = lengthOfRoom - lightOccupyingSpace;
+    const distanceBetweenLightCenters = lengthOfRoom / numOfLights;
+    const distanceBetweenWallAndFirstLightCenter = distanceBetweenLightCenters / 2;
+    const distanceBetweenLightsEdgeToEdge = freeSpace / numOfLights;
+    const distanceBetweenWallAndFirstLightEdge = distanceBetweenLightsEdgeToEdge / 2;
+    const distanceFromWidthWallToLightCenter = widthOfRoom / 2;
+    const distanceFromWidthWallToLightEdge = (widthOfRoom - (isParallel ? lengthOfLight : widthOfLight)) / 2;
+
+    const newAnswers = {
+      distanceBetweenLightCenters,
+      distanceBetweenWallAndFirstLightCenter,
+      distanceBetweenLightsEdgeToEdge,
+      distanceBetweenWallAndFirstLightEdge,
+      distanceFromWidthWallToLightCenter,
+      distanceFromWidthWallToLightEdge,
+    };
+
+    setTimeout(() => {
+      console.log(JSON.stringify(newAnswers, null, 2));
+      this.setState(prevState => ({
+        ...prevState,
+        formValues: values,
+        answers: newAnswers,
+      }));
+      actions.setSubmitting(false);
+      console.log(this.state)
+    }, 1000);
+  }
+
   render() {
     const { formValues, answers } = this.state;
     return (
@@ -73,46 +103,7 @@ class LightSpacingForm extends Component {
         <Display {...formValues} {...answers} />
         <Formik
           initialValues={formValues}
-          onSubmit={(values, actions) => {
-            const {
-              numOfLights,
-              lengthOfRoom,
-              widthOfRoom,
-              lengthOfLight,
-              widthOfLight,
-              orientation,
-              units,
-            } = values;
-            const isParallel = orientation === 'parallel';
-            const lightOccupyingSpace = (isParallel ? widthOfLight : lengthOfLight) * numOfLights;
-            const freeSpace = lengthOfRoom - lightOccupyingSpace;
-            const distanceBetweenLightCenters = lengthOfRoom / numOfLights;
-            const distanceBetweenWallAndFirstLightCenter = distanceBetweenLightCenters / 2;
-            const distanceBetweenLightsEdgeToEdge = freeSpace / numOfLights;
-            const distanceBetweenWallAndFirstLightEdge = distanceBetweenLightsEdgeToEdge / 2;
-            const distanceFromWidthWallToLightCenter = widthOfRoom / 2;
-            const distanceFromWidthWallToLightEdge = (widthOfRoom - (isParallel ? lengthOfLight : widthOfLight)) / 2;
-
-            const newAnswers = {
-              distanceBetweenLightCenters,
-              distanceBetweenWallAndFirstLightCenter,
-              distanceBetweenLightsEdgeToEdge,
-              distanceBetweenWallAndFirstLightEdge,
-              distanceFromWidthWallToLightCenter,
-              distanceFromWidthWallToLightEdge,
-            };
-
-            setTimeout(() => {
-              console.log(JSON.stringify(newAnswers, null, 2));
-              this.setState(prevState => ({
-                ...prevState,
-                formValues: values,
-                answers: newAnswers,
-              }));
-              actions.setSubmitting(false);
-              console.log(this.state)
-            }, 1000);
-          }}
+          onSubmit={this.handleSubmit}
           validationSchema={yup.object({
             numOfLights: yup.number().required('Required'),
             lengthOfRoom: yup.number().required('Required'),
@@ -122,136 +113,14 @@ class LightSpacingForm extends Component {
             orientation: yup.string().matches(/parallel|series/).required('Required'),
             units: yup.string().matches(/imperial|metric/).required('Required'),
           })}
-        >
-          {({
-            values,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            handleReset,
-            isSubmitting,
-            touched,
-            dirty,
-          }) => (
-            <Form>
-              <React.Fragment>
-                <Field name="units">
-                  {({ field }) => (
-                    <FormGroup>
-                      <Radio {...field} value="imperial" checked={field.value === 'imperial'} inline>
-                        Imperial (inches)
-                      </Radio>
-                      <Radio {...field} value="metric" checked={field.value === 'metric'} inline>
-                        Metric (millimeters)
-                      </Radio>
-                    </FormGroup>
-                  )}
-                </Field>
-                <ErrorMessage name="units">
-                  {msg => <HelpBlock>{msg}</HelpBlock>}
-                </ErrorMessage>
-              </React.Fragment>
-
-              <React.Fragment>
-                <Field name="numOfLights">
-                  {({ field, form }) => {
-                    console.log(field, form);
-                    return (
-                      <FieldGroup
-                        {...field}
-                        onChange={(x) => {
-                          handleChange(x);
-                          this.visualUpdateNumOfLights(x);
-                        }}
-                        type="number"
-                        label="Number Of Lights"
-                      />);
-                  }}
-                </Field>
-                <ErrorMessage name="numOfLights">
-                  {msg => <HelpBlock>{msg}</HelpBlock>}
-                </ErrorMessage>
-              </React.Fragment>
-
-              <React.Fragment>
-                <Field name="lengthOfLight">
-                  {({ field, form }) => (
-                    <FieldGroup {...field} type="number" label="Length Of Light" help={<ErrorMessage name="lengthOfLight" />} />
-                  )}
-                </Field>
-                <ErrorMessage name="lengthOfRoom">
-                  {msg => <HelpBlock>{msg}</HelpBlock>}
-                </ErrorMessage>
-              </React.Fragment>
-
-              <Field name="widthOfLight">
-                {({ field, form }) => (
-                  <FieldGroup {...field} type="number" label="Width Of Light" />
-                )}
-              </Field>
-
-              <Field name="lengthOfRoom">
-                {({ field, form }) => (
-                  <FieldGroup {...field} type="number" label="Length Of Room" />
-                )}
-              </Field>
-
-              <Field name="widthOfRoom">
-                {({ field, form }) => (
-                  <FieldGroup {...field} type="number" label="Width Of Room" />
-                )}
-              </Field>
-
-              <Field name="orientation">
-                {({ field, form }) => (
-                  <FormGroup>
-                    <Radio
-                      {...field}
-                      value="parallel"
-                      checked={field.value === 'parallel'}
-                      inline
-                      onChange={(x) => {
-                        handleChange(x);
-                        this.visualUpdateOrientation(x);
-                      }}
-                    >
-                      Parallel
-                    </Radio>
-                    <Radio
-                      {...field}
-                      value="series"
-                      checked={field.value === 'row'}
-                      inline
-                      onChange={(x) => {
-                        handleChange(x);
-                        this.visualUpdateOrientation(x);
-                      }}
-                    >
-                      Row / Series
-                    </Radio>
-                  </FormGroup>
-                )}
-              </Field>
-
-              <ButtonToolbar>
-                <Button
-                  type="submit"
-                  bsStyle="primary"
-                  disabled={isSubmitting}
-                >
-                  Submit
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  disabled={isSubmitting}
-                >
-                  Reset
-                </Button>
-              </ButtonToolbar>
-
-            </Form>
+          render={props => (
+            <FormDisplay
+              visualUpdateNumOfLights={this.visualUpdateNumOfLights}
+              visualUpdateOrientation={this.visualUpdateOrientation}
+              {...props}
+            />
           )}
-        </Formik>
+        />
       </div>
     );
   }

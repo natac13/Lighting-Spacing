@@ -1,0 +1,38 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 50px auto 50px;
+  grid-template-areas:
+    "down down down"
+    "right light left"
+    "up up up";
+  justify-content: center;
+  grid-gap: 9px;
+}
+
+.arrow-down {
+  grid-area: down;
+  align-self: end;
+  justify-self: center;
+}
+
+.arrow-up {
+  grid-area: up;
+  align-self: start;
+  justify-self: center;
+}
+
+.arrow-left {
+  grid-area: left;
+  align-self: center;
+}
+
+.arrow-right {
+  grid-area: right;
+  align-self: center;
+}
+
+.light {
+  grid-area: light;
+  border: 1px solid black;
+}

@@ -7,9 +7,9 @@ import {
   HelpBlock,
 } from 'react-bootstrap';
 
-const FieldGroup = ({ id, label, help, ...props }) => {
+const FieldGroup = ({ id, label, help, className, ...props }) => {
   return (
-    <FormGroup controlId={id}>
+    <FormGroup controlId={id} className={className}>
       <ControlLabel>{label}</ControlLabel>
       <FormControl {...props} />
       {!!help && <HelpBlock>{help}</HelpBlock>}
