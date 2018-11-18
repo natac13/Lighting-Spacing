@@ -4,17 +4,15 @@ import {
   FormGroup,
   ControlLabel,
   FormControl,
-  HelpBlock,
 } from 'react-bootstrap';
 
-const FieldGroup = ({ id, label, help, className, ...props }) => {
+const FieldGroup = ({ id, label, className, ...props }) => {
   return (
     <FormGroup controlId={id} className={className}>
       <ControlLabel>{label}</ControlLabel>
       <FormControl {...props} />
-      {!!help && <HelpBlock>{help}</HelpBlock>}
     </FormGroup>
   );
-}
+};
 
 export default FieldGroup;

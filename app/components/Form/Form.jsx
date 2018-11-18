@@ -5,7 +5,6 @@ import * as yup from 'yup'
 import Display from '../Display';
 import FormDisplay from './FormDisplay';
 
-import style from './style.scss';
 
 class LightSpacingForm extends Component {
   constructor(props) {
@@ -21,6 +20,7 @@ class LightSpacingForm extends Component {
         lengthOfLight: 4,
         orientation: 'parallel',
         units: 'imperial',
+        multiRows: false,
       },
       answers: {
         // distanceBetweenLightCenters: undefined,
@@ -32,27 +32,7 @@ class LightSpacingForm extends Component {
       },
     };
 
-    this.visualUpdateNumOfLights = this.visualUpdateNumOfLights.bind(this);
-    this.visualUpdateOrientation = this.visualUpdateOrientation.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  visualUpdateNumOfLights(event) {
-    const { target: { value } } = event;
-    const newNumOfLights = value < 0 ? 0 : value;
-    return this.setState(prevState => ({
-      ...prevState,
-      answers: {},
-      formValues: { ...prevState.formValues, numOfLights: newNumOfLights },
-    }));
-  }
-
-  visualUpdateOrientation(event) {
-    const { target: { value } } = event;
-    return this.setState(prevState => ({
-      ...prevState,
-      formValues: { ...prevState.formValues, orientation: value },
-    }));
   }
 
   handleSubmit(values, actions) {
@@ -100,7 +80,6 @@ class LightSpacingForm extends Component {
     const { formValues, answers } = this.state;
     return (
       <div>
-        <Display {...formValues} {...answers} />
         <Formik
           initialValues={formValues}
           onSubmit={this.handleSubmit}
@@ -114,11 +93,10 @@ class LightSpacingForm extends Component {
             units: yup.string().matches(/imperial|metric/).required('Required'),
           })}
           render={props => (
-            <FormDisplay
-              visualUpdateNumOfLights={this.visualUpdateNumOfLights}
-              visualUpdateOrientation={this.visualUpdateOrientation}
-              {...props}
-            />
+            <React.Fragment>
+              <FormDisplay {...props} />
+              <Display {...props.values} {...answers} />
+            </React.Fragment>
           )}
         />
       </div>

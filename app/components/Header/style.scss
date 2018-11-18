@@ -35,7 +35,7 @@
 .title {
   font-size: $font-size-title;
   letter-spacing: 1px;
-  color: $contrast !important;
+  color: $color-primary-0 !important;
   font-family: $title-font;
 
   @media (min-width:20em) {
@@ -68,10 +68,10 @@
 
 .creator {
   align-self: flex-end;
-  color: $forth-color;
+  color: $color-primary-2;
   font-size: ms(1);
   text-decoration: underline;
-  text-shadow: 0 0 2px $secondary-color;
+  text-shadow: 0 0 2px $color-primary-3;
 
   @media (min-width:20em) {
     /* smartphones, iPhone, portrait 480x320 phones */

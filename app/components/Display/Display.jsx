@@ -4,6 +4,7 @@ import Light from 'Components/Light';
 
 import range from 'lodash/range';
 import flatten from 'lodash/flatten';
+import { min } from 'ramda';
 
 
 import style from './style.scss';
@@ -16,6 +17,9 @@ function Display({
   orientation,
   distanceBetweenWallAndFirstLightCenter,
   distanceBetweenLightCenters,
+  lightsPerRow,
+  numOfRows,
+  multiRows,
 }) {
 
   const renderMesurment = (distance) => {
@@ -41,11 +45,12 @@ function Display({
   //   }
   //   return [<span key={`${i}a`}>{a}</span>, light];
   // }));
-  const roomWidth = orientation === 'parallel' ? 12 * numOfLights : 23 * numOfLights;
-  const gridTemplateColumns = `repeat(${numOfLights}, 2em)`;
+  const colCount = multiRows ? min(lightsPerRow, numOfLights) : numOfLights;
+  const roomWidth = orientation === 'parallel' ? 12 * colCount : 23 * colCount;
+  const gridTemplateColumns = `repeat(${colCount}, 2em)`;
   const roomStyling = {
-    'width': `${roomWidth}em`,
-    'gridTemplateColumns': gridTemplateColumns,
+    width: `${roomWidth}em`,
+    gridTemplateColumns,
   };
   return (
     <div className={style.container}>

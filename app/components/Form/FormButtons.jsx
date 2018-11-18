@@ -6,6 +6,8 @@ import {
   Button,
 } from 'react-bootstrap';
 
+import style from './style.scss';
+
 const FormButtons = (props) => {
   const {
     isSubmitting,
@@ -19,12 +21,14 @@ const FormButtons = (props) => {
         type="submit"
         bsStyle="primary"
         disabled={isSubmitting}
+        className={style.button}
       >
         Submit
       </Button>
       <Button
         onClick={handleReset}
         disabled={isSubmitting}
+        className={style.button}
       >
         Reset
       </Button>

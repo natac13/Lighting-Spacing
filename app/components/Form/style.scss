@@ -1,22 +1,28 @@
 .form {
   width: 62vw;
-  background: rgba(#c32116, 0.12);
-  box-shadow: 0px 0px 72px 12px rgba(#c32116, 0.93);
+  min-height: 46vh;
+  background: rgba($color-secondary-2-0, .8);
   border: 3px 10px black solid;
+  border-radius: 6px;
+  color: $offWhite;
   padding: 0.5em 1.3em;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: min-content;
+  grid-auto-rows: min-content minmax(max-content, auto) .25em;
   margin: auto;
+  margin-bottom: 2em;
   justify-content: center;
   align-items: center;
   grid-gap: 5px;
   grid-template-areas:
     "t t t t t t t t t t t t"
-    "sc sc sc sc ld ld ld ld ld ld . ."
-    "sc sc sc sc ld ld ld ld ld ld . ."
     "sc sc sc sc rd rd rd rd rd rd . ."
     "sc sc sc sc rd rd rd rd rd rd . ."
+    // "sc sc sc sc rd rd rd rd rd rd . ."
+    // "sc sc sc sc ld ld ld ld ld ld . ."
+    "sc sc sc sc ld ld ld ld ld ld . ."
+    "sc sc sc sc ld ld ld ld ld ld . ."
+    ". . . . . . . . . . . ."
 }
 
 .title {
@@ -33,16 +39,20 @@
   padding-left: 3em;
   padding-right: 3em;
   align-items: stretch;
-  user-select: center;
+  justify-content: space-around;
 
   .buttons {
-    margin-top: auto;
+    margin-top: 33%;
     display: flex;
     justify-content: space-between;
     flex-flow: column;
     padding-right: 1em;
     height: 32%;
+
   }
+}
+.button {
+  composes: common-btn;
 }
 
 .light-details {
