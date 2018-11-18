@@ -6,6 +6,24 @@ import Display from '../Display';
 import FormDisplay from './FormDisplay';
 
 
+function horizontalDistanceCal(lengthOfRoom, lightsPerRow) {
+  const horizontalDistanceBetweenLightCenters = lengthOfRoom / lightsPerRow;
+  const horizontalDistanceBetweenWallAndFirstLightCenter = horizontalDistanceBetweenLightCenters / 2;
+  return {
+    horizontalDistanceBetweenLightCenters,
+    horizontalDistanceBetweenWallAndFirstLightCenter,
+  }
+}
+
+function veritcalDistanceCal(widthOfRoom, numOfRows) {
+  const verticalDistanceBetweenLightCenters = widthOfRoom / numOfRows;
+  const verticalDistanceBetweenWallAndFirstLightCenter = verticalDistanceBetweenLightCenters / 2;
+  return {
+    verticalDistanceBetweenLightCenters,
+    verticalDistanceBetweenWallAndFirstLightCenter
+  }
+}
+
 class LightSpacingForm extends Component {
   constructor(props) {
     super(props);
@@ -16,8 +34,6 @@ class LightSpacingForm extends Component {
         lightsPerRow: 4,
         lengthOfRoom: 50,
         widthOfRoom: 20,
-        widthOfLight: 1,
-        lengthOfLight: 4,
         orientation: 'parallel',
         units: 'imperial',
         multiRows: false,
@@ -25,10 +41,7 @@ class LightSpacingForm extends Component {
       answers: {
         // distanceBetweenLightCenters: undefined,
         // distanceBetweenWallAndFirstLightCenter: undefined,
-        // distanceBetweenLightsEdgeToEdge: undefined,
-        // distanceBetweenWallAndFirstLightEdge: undefined,
         // distanceFromWidthWallToLightCenter: undefined,
-        // distanceFromWidthWallToLightEdge: undefined,
       },
     };
 
@@ -40,28 +53,33 @@ class LightSpacingForm extends Component {
       numOfLights,
       lengthOfRoom,
       widthOfRoom,
-      lengthOfLight,
-      widthOfLight,
       orientation,
       units,
+      multiRows,
+      numOfRows,
+      lightsPerRow,
     } = values;
+
     const isParallel = orientation === 'parallel';
-    const lightOccupyingSpace = (isParallel ? widthOfLight : lengthOfLight) * numOfLights;
-    const freeSpace = lengthOfRoom - lightOccupyingSpace;
-    const distanceBetweenLightCenters = lengthOfRoom / numOfLights;
-    const distanceBetweenWallAndFirstLightCenter = distanceBetweenLightCenters / 2;
-    const distanceBetweenLightsEdgeToEdge = freeSpace / numOfLights;
-    const distanceBetweenWallAndFirstLightEdge = distanceBetweenLightsEdgeToEdge / 2;
-    const distanceFromWidthWallToLightCenter = widthOfRoom / 2;
-    const distanceFromWidthWallToLightEdge = (widthOfRoom - (isParallel ? lengthOfLight : widthOfLight)) / 2;
+    // Horizontal distance calculation
+    const {
+      horizontalDistanceBetweenLightCenters,
+      horizontalDistanceBetweenWallAndFirstLightCenter
+    } = horizontalDistanceCal(lengthOfRoom, lightsPerRow);
+
+
+    // Vertical distance calculations
+    const {
+      verticalDistanceBetweenLightCenters,
+      verticalDistanceBetweenWallAndFirstLightCenter,
+    } = veritcalDistanceCal(widthOfRoom, numOfRows);
+
 
     const newAnswers = {
-      distanceBetweenLightCenters,
-      distanceBetweenWallAndFirstLightCenter,
-      distanceBetweenLightsEdgeToEdge,
-      distanceBetweenWallAndFirstLightEdge,
-      distanceFromWidthWallToLightCenter,
-      distanceFromWidthWallToLightEdge,
+      horizontalDistanceBetweenLightCenters,
+      horizontalDistanceBetweenWallAndFirstLightCenter,
+      verticalDistanceBetweenLightCenters,
+      verticalDistanceBetweenWallAndFirstLightCenter,
     };
 
     setTimeout(() => {
@@ -72,7 +90,6 @@ class LightSpacingForm extends Component {
         answers: newAnswers,
       }));
       actions.setSubmitting(false);
-      console.log(this.state)
     }, 1000);
   }
 
@@ -87,14 +104,14 @@ class LightSpacingForm extends Component {
             numOfLights: yup.number().required('Required'),
             lengthOfRoom: yup.number().required('Required'),
             widthOfRoom: yup.number(),
-            lengthOfLight: yup.number(),
-            widthOfLight: yup.number(),
+            lightsPerRow: yup.number(),
+            numOfRows: yup.number(),
             orientation: yup.string().matches(/parallel|series/).required('Required'),
             units: yup.string().matches(/imperial|metric/).required('Required'),
           })}
           render={props => (
             <React.Fragment>
-              <FormDisplay {...props} />
+              <FormDisplay {...props} {...answers} />
               <Display {...props.values} {...answers} />
             </React.Fragment>
           )}

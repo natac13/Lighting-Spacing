@@ -1,7 +1,7 @@
 .form {
   width: 62vw;
   min-height: 46vh;
-  background: rgba($color-secondary-2-0, .8);
+  background: rgba($color-secondary-2-0, .87);
   border: 3px 10px black solid;
   border-radius: 6px;
   color: $offWhite;
@@ -15,19 +15,41 @@
   align-items: center;
   grid-gap: 5px;
   grid-template-areas:
-    "t t t t t t t t t t t t"
-    "sc sc sc sc rd rd rd rd rd rd . ."
-    "sc sc sc sc rd rd rd rd rd rd . ."
-    // "sc sc sc sc rd rd rd rd rd rd . ."
-    // "sc sc sc sc ld ld ld ld ld ld . ."
-    "sc sc sc sc ld ld ld ld ld ld . ."
-    "sc sc sc sc ld ld ld ld ld ld . ."
+    "t t t t t t t t t at at at"
+    "sc sc sc sc rd rd rd rd rd ans ans ans"
+    "sc sc sc sc rd rd rd rd rd ans ans ans"
+    "sc sc sc sc ld ld ld ld ld ans ans ans"
+    "sc sc sc sc ld ld ld ld ld ans ans ans"
     ". . . . . . . . . . . ."
 }
 
 .title {
   grid-area: t;
-  justify-self: center;
+  justify-self: left;
+}
+
+.answer-title {
+  grid-area: at;
+  justify-self: left;
+}
+
+.answers {
+  grid-area: ans;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-evenly;
+  align-items: center;
+  color: $offWhite;
+  text-shadow:
+    -1px -1px 1px black,
+    1px 1px 0px $color-secondary-1-0,
+    -1px -1px 0 $color-secondary-1-0,
+    0 0 1.2em $color-secondary-1-0,
+    0 0 .5em $color-secondary-1-0,
+    0 0 .2em $color-secondary-1-0;
+  font-size: 2em;
+  font-weight: bold;
 }
 
 .setup-controls {

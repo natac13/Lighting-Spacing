@@ -27,18 +27,48 @@ const FormDisplay = ({
   touched,
   dirty,
   setFieldValue,
+  horizontalDistanceBetweenLightCenters,
+  horizontalDistanceBetweenWallAndFirstLightCenter,
+  verticalDistanceBetweenLightCenters,
+  verticalDistanceBetweenWallAndFirstLightCenter,
 }) => {
 
   const {
     multiRows,
     lightsPerRow,
     numOfRows,
+    units,
   } = values;
+
+  const renderMesurment = (distance) => {
+    if (!distance) { return ''; }
+    if (units === 'metric') {
+      return `${distance}mm`;
+    }
+    return `${distance}"`;
+  };
+
+
+  const a = renderMesurment(horizontalDistanceBetweenLightCenters);
+  const b = renderMesurment(horizontalDistanceBetweenWallAndFirstLightCenter);
+  const c = renderMesurment(verticalDistanceBetweenWallAndFirstLightCenter);
+  const d = renderMesurment(verticalDistanceBetweenLightCenters);
   return (
     <Form className={style.form}>
 
       <section className={style.title}>
         Input Form
+      </section>
+
+      <section className={style.answerTitle}>
+        Mesurments:
+      </section>
+
+      <section className={style.answers}>
+        <p>{`a: ${a}`}</p>
+        <p>{`b: ${b}`}</p>
+        <p>{`c: ${c}`}</p>
+        {numOfRows > 1 && <p>{`d: ${d}`}</p>}
       </section>
 
       <section className={style.setupControls}>
@@ -87,6 +117,17 @@ const FormDisplay = ({
           {({ field }) => (
             <Checkbox
               {...field}
+              onChange={(e) => {
+                handleChange(e);
+                if (field.value) {
+                  setFieldValue('numOfRows', 1);
+                  setFieldValue('numOfLights', lightsPerRow);
+                  return;
+                }
+                setFieldValue('numOfRows', 2);
+                setFieldValue('numOfLights', 2 * lightsPerRow);
+                return;
+              }}
               checked={field.value}
             >
               Multiple Rows of Lights
@@ -129,6 +170,11 @@ const FormDisplay = ({
               return (
                 <FieldGroup
                   {...field}
+                  onChange={(e) => {
+                    handleChange(e);
+                    const newLightsPerRow = e.target.value / numOfRows;
+                    setFieldValue('lightsPerRow', newLightsPerRow);
+                  }}
                   readOnly={multiRows}
                   type="number"
                   label="Number Of Lights"
