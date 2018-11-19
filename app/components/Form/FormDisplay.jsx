@@ -177,6 +177,8 @@ const FormDisplay = ({
                   }}
                   readOnly={multiRows}
                   type="number"
+                  min={1}
+                  max={numOfRows === 1 ? 12 : null}
                   label="Number Of Lights"
                 />);
             }}
@@ -197,6 +199,8 @@ const FormDisplay = ({
                   setFieldValue('numOfLights', newNumOfLights);
                 }}
                 type="number"
+                min={1}
+                max={12}
                 label="Rows of Lights"
                 readOnly={!multiRows}
               />
@@ -218,6 +222,8 @@ const FormDisplay = ({
                   setFieldValue('numOfLights', newNumOfLights);
                 }}
                 type="number"
+                min={1}
+                max={12}
                 label="Lights Per Row"
                 readOnly={!multiRows}
               />

@@ -95,17 +95,18 @@ class LightSpacingForm extends Component {
 
   render() {
     const { formValues, answers } = this.state;
+    const maxLightPerRow = 12;
     return (
       <div>
         <Formik
           initialValues={formValues}
           onSubmit={this.handleSubmit}
           validationSchema={yup.object({
-            numOfLights: yup.number().required('Required'),
+            numOfLights: yup.number().min(1).positive('Positive value needed').required('Required'),
             lengthOfRoom: yup.number().required('Required'),
             widthOfRoom: yup.number(),
-            lightsPerRow: yup.number(),
-            numOfRows: yup.number(),
+            lightsPerRow: yup.number().min(1).lessThan(maxLightPerRow, `Max ${maxLightPerRow} lights per Row.`),
+            numOfRows: yup.number().min(1),
             orientation: yup.string().matches(/parallel|series/).required('Required'),
             units: yup.string().matches(/imperial|metric/).required('Required'),
           })}

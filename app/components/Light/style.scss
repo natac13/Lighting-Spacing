@@ -35,4 +35,53 @@
 .light {
   grid-area: light;
   border: 1px solid black;
+  position: relative;
+}
+
+
+.measurment {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: black;
+  text-shadow:
+    -1px -1px 1px $offWhite,
+    1px 1px 0px $color-secondary-1-0,
+    -1px -1px 0 $color-secondary-1-0,
+    0 0 1.2em $color-secondary-1-0,
+    0 0 .5em $color-secondary-1-0,
+    0 0 .2em $color-secondary-1-0;
+}
+
+.a-measurment {
+  composes: measurment;
+  position: absolute;
+  left: 3em;
+  top: 50%;
+  transform: translate(50%, -50%);
+
+}
+
+.b-measurment {
+  composes: measurment;
+  position: absolute;
+  left: -2em;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.c-measurment {
+  composes: measurment;
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.d-measurment {
+  composes: measurment;
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+
 }

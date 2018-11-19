@@ -39,7 +39,12 @@ function Display({
   // const d = renderMesurment(verticalDistanceBetweenWallAndFirstLightCenter);
 
   const lights = range(numOfLights).map((e, i) => (
-    <Light orientation={orientation} key={`#${i + 1}`} />));
+    <Light
+      key={`#${i + 1}`}
+      index={i}
+      orientation={orientation}
+      numOfRows={numOfRows}
+    />));
 
   const colCount = multiRows ? min(lightsPerRow, numOfLights) : numOfLights;
   const roomWidth = orientation === 'parallel' ? 9 * colCount : 16 * colCount;
@@ -53,10 +58,7 @@ function Display({
       <h3 className={style.widthLabel}>Width</h3>
       <h3 className={style.lengthLabel}>Length</h3>
       <div className={style.room} style={roomStyling}>
-        <p className={style.aMeasurment}>A</p>
-        <p className={style.bMeasurment}>B</p>
-        <p className={style.cMeasurment}>C</p>
-        {numOfRows > 1 && <p className={style.dMeasurment}>D</p>}
+
         {lights}
       </div>
     </div>

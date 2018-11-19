@@ -13,6 +13,8 @@ import style from './style.scss';
 const Light = (props) => {
   const {
     orientation,
+    index,
+    numOfRows,
   } = props
 
   const lightsParallel = {
@@ -31,10 +33,21 @@ const Light = (props) => {
       <FiArrowDown className={style.arrowDown} />
       <FiArrowLeft className={style.arrowLeft} />
       <FiArrowRight className={style.arrowRight} />
+
       <div
         className={style.light}
         style={orientation === 'parallel' ? lightsParallel : lightsSeries}
-      />
+      >
+        {index === 0 && (
+          <React.Fragment>
+            <p className={style.aMeasurment}>A</p>
+            <p className={style.bMeasurment}>B</p>
+            <p className={style.cMeasurment}>C</p>
+            {numOfRows > 1 && <p className={style.dMeasurment}>D</p>}
+          </React.Fragment>
+        )
+        }
+      </div>
     </section>
   )
 }
