@@ -8,7 +8,8 @@
     "prebuild": "webpack --mode production --config ./webpack.prod.config.js --env.PLATFORM=production --env.VERSION=stag --progress",
     "build": "node server",
     "lint": "eslint ./app",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
