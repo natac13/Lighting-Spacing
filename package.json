@@ -1,6 +1,6 @@
 {
   "name": "lightingspacing",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Determines the spacing between lights for installing purposes.",
   "private": true,
   "scripts": {
