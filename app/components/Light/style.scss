@@ -1,0 +1,75 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 33px auto 33px;
+  grid-template-areas:
+    ". down down down ."
+    ". right light left ."
+    ". up up up .";
+  justify-content: center;
+  grid-gap: 9px;
+}
+
+.arrow-down {
+  grid-area: down;
+  align-self: end;
+  justify-self: center;
+}
+
+.arrow-up {
+  grid-area: up;
+  align-self: start;
+  justify-self: center;
+}
+
+.arrow-left {
+  grid-area: left;
+  align-self: center;
+}
+
+.arrow-right {
+  grid-area: right;
+  align-self: center;
+}
+
+.light {
+  grid-area: light;
+  border: 1px solid black;
+  position: relative;
+}
+
+
+.measurment {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: black;
+  text-shadow:
+    -1px -1px 1px $offWhite,
+    1px 1px 0px $color-secondary-1-0,
+    -1px -1px 0 $color-secondary-1-0,
+    0 0 1.2em $color-secondary-1-0,
+    0 0 .5em $color-secondary-1-0,
+    0 0 .2em $color-secondary-1-0;
+}
+
+.a-measurment {
+  composes: measurment;
+  position: absolute;
+}
+
+.b-measurment {
+  composes: measurment;
+  position: absolute;
+}
+
+.c-measurment {
+  composes: measurment;
+  position: absolute;
+}
+
+.d-measurment {
+  composes: measurment;
+  position: absolute;
+
+
+}
