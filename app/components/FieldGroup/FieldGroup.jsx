@@ -6,11 +6,17 @@ import {
   FormControl,
 } from 'react-bootstrap';
 
-const FieldGroup = ({ id, label, className, ...props }) => {
+const FieldGroup = ({
+  field,
+  id,
+  label,
+  className,
+  ...props
+}) => {
   return (
     <FormGroup controlId={id} className={className}>
       <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
+      <FormControl {...field} {...props} />
     </FormGroup>
   );
 };

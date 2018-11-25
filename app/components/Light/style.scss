@@ -55,33 +55,21 @@
 .a-measurment {
   composes: measurment;
   position: absolute;
-  left: 3em;
-  top: 50%;
-  transform: translate(50%, -50%);
-
 }
 
 .b-measurment {
   composes: measurment;
   position: absolute;
-  left: -2em;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .c-measurment {
   composes: measurment;
   position: absolute;
-  top: -25%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .d-measurment {
   composes: measurment;
   position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translate(-50%, 0%);
+
 
 }

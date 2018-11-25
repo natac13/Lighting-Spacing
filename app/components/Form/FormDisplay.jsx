@@ -15,6 +15,8 @@ import {
 import FieldGroup from '../FieldGroup';
 import FormButtons from './FormButtons';
 
+import FormInput from '../FormInput';
+
 import style from './style.scss';
 
 const FormDisplay = ({
@@ -85,9 +87,7 @@ const FormDisplay = ({
               </FormGroup>
             )}
           </Field>
-          <ErrorMessage name="units">
-            {msg => <HelpBlock>{msg}</HelpBlock>}
-          </ErrorMessage>
+          <ErrorMessage name="units" component={HelpBlock} />
         </React.Fragment>
 
         <Field name="orientation">
@@ -126,7 +126,6 @@ const FormDisplay = ({
                 }
                 setFieldValue('numOfRows', 2);
                 setFieldValue('numOfLights', 2 * lightsPerRow);
-                return;
               }}
               checked={field.value}
             >
@@ -144,48 +143,42 @@ const FormDisplay = ({
 
       <section className={style.roomDetails}>
         <React.Fragment>
-          <Field name="lengthOfRoom">
-            {({ field }) => (
-              <FieldGroup {...field} type="number" label="Length Of Room" />
-            )}
-          </Field>
-          <ErrorMessage name="lengthOfRoom">
-            {msg => <HelpBlock>{msg}</HelpBlock>}
-          </ErrorMessage>
+          <Field
+            name="lengthOfRoom"
+            type="number"
+            label="Length Of Room"
+            component={FieldGroup}
+          />
+          <ErrorMessage name="lengthOfRoom" component={HelpBlock} />
         </React.Fragment>
 
-        <Field name="widthOfRoom">
-          {({ field }) => (
-            <FieldGroup {...field} type="number" label="Width Of Room" />
-          )}
-        </Field>
+        <FormInput
+          name="widthOfRoom"
+          type="number"
+          label="Width Of Room"
+          component={FieldGroup}
+        />
+
 
       </section>
 
       <section className={style.lightDetails}>
         <React.Fragment>
-          <Field name="numOfLights">
-            {({ field, form }) => {
-              console.log(field, form);
-              return (
-                <FieldGroup
-                  {...field}
-                  onChange={(e) => {
-                    handleChange(e);
-                    const newLightsPerRow = e.target.value / numOfRows;
-                    setFieldValue('lightsPerRow', newLightsPerRow);
-                  }}
-                  readOnly={multiRows}
-                  type="number"
-                  min={1}
-                  max={numOfRows === 1 ? 12 : null}
-                  label="Number Of Lights"
-                />);
+          <Field
+            name="numOfLights"
+            component={FieldGroup}
+            onChange={(e) => {
+              handleChange(e);
+              const newLightsPerRow = e.target.value / numOfRows;
+              setFieldValue('lightsPerRow', newLightsPerRow);
             }}
-          </Field>
-          <ErrorMessage name="numOfLights">
-            {msg => <HelpBlock>{msg}</HelpBlock>}
-          </ErrorMessage>
+            readOnly={multiRows}
+            type="number"
+            min={1}
+            max={numOfRows === 1 ? 12 : null}
+            label="Number Of Lights"
+          />
+          <ErrorMessage name="numOfLights" component={HelpBlock} />
         </React.Fragment>
 
         <React.Fragment>
@@ -199,7 +192,7 @@ const FormDisplay = ({
                   setFieldValue('numOfLights', newNumOfLights);
                 }}
                 type="number"
-                min={1}
+                min={multiRows ? 2 : 1}
                 max={12}
                 label="Rows of Lights"
                 readOnly={!multiRows}

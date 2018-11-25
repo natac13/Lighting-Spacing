@@ -8,7 +8,7 @@ var Visualizer = require('webpack-visualizer-plugin');
 
 var baseConfig = require('./webpack.base.config');
 
-const prodConfiguration = env => {
+const prodConfiguration = (env) => {
   return merge([
     {
       optimization: {
