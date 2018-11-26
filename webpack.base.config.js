@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const path = require('path');
-
+// const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -88,8 +88,10 @@ module.exports = (env) => {
         ]), // copys assets, like photos to the output folder.
         new HtmlWebpackPlugin({
           template: './app/index.html',
-          filename: './index.html'
+          filename: './index.html',
+          favicon: './favicon.ico'
         }),
+        // new FaviconsWebpackPlugin('./favicon.ico'),
         new webpack.DefinePlugin({
           'process.env.VERSION': JSON.stringify(env.VERSION),
           'process.env.PLATFORM': JSON.stringify(env.PLATFORM)

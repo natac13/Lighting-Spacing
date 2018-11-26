@@ -31,6 +31,9 @@ const prodConfiguration = (env) => {
           new OptimizeCssAssetsPlugin(),
         ],
       },
+      output: {
+        publicPath: '/Lighting-Spacing/', // where the generated static files reside. This is the project name for gh-pages
+      },
       devtool: 'source-map',
       plugins: [
         new MiniCssExtractPlugin({
