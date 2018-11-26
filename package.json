@@ -1,12 +1,13 @@
 {
   "name": "lightingspacing",
-  "version": "1.0.1",
-  "description": "Determines the spacing between lights for installing purposes.",
+  "version": "1.0.2",
+  "description": "Calculates the spacing between lights for install purposes.",
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --mode development --config ./webpack.base.config.js --open --hot --history-api-fallback --env.PLATFORM=development",
-    "prebuild": "webpack --mode production --config ./webpack.prod.config.js --env.PLATFORM=production --env.VERSION=stag --progress",
-    "build": "node server",
+    "build": "webpack --mode production --config ./webpack.prod.config.js --env.PLATFORM=production --env.VERSION=stag --progress",
+    "preserver": "npm run build",
+    "server": "node server",
     "lint": "eslint ./app",
     "test": "jest",
     "deploy": "gh-pages -d build"
